@@ -1,6 +1,13 @@
 import './style.css'
 import { Game, Scene, WEBGL } from 'phaser'
 
+const gameStartDiv= document.querySelector('#gameStartDiv');
+const gameStartButton= document.querySelector('#startButton');
+const gameEndDiv= document.querySelector('#gameEndDiv');
+const gameWinLoseSpan= document.querySelector('#gameWinLoseSpan');
+const gameEndScoreSpan= document.querySelector('#gameScoreSpan');
+
+
 const sizes = {
   width: 500,
   height: 500,
@@ -34,6 +41,8 @@ class GameScene extends Scene {
   }
   
   create() {
+    this.scene.pause('scene-game');
+
     this.coinFx = this.sound.add('coin');
     this.bgMusic = this.sound.add('bgMusic');
     this.bgMusic.play();
@@ -110,7 +119,15 @@ class GameScene extends Scene {
   }
 
   gameOver() {
-    console.log('Game over');
+    this.sys.game.destroy(true);
+    gameEndScoreSpan.textContent = this.points;
+    if(this.points >= 10) {
+      gameWinLoseSpan.textContent = "Win!"
+    } else {
+      gameWinLoseSpan.textContent = "Lose..."
+    }
+
+    gameEndDiv.style.display = 'flex';
   }
 }
 
@@ -132,3 +149,8 @@ const config = {
 }
 
 const game = new Game(config);
+
+gameStartButton.addEventListener('click', () => {
+  gameStartDiv.style.display = 'none';
+  game.scene.resume('scene-game');
+})
